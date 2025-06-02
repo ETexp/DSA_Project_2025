@@ -6,6 +6,9 @@
 # Create the project with React + TypeScript template using Vite
 npm create vite@latest maze-pathfinding-visualizer -- --template react-ts
 
+#Change directory into maze-pathfinding-visualizer before you install
+cd maze-pathfinding-visualizer
+
 # Install Tailwind CSS and its dependencies
 npm install -D tailwindcss postcss autoprefixer
 
