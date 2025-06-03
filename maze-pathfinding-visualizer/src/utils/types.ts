@@ -12,5 +12,5 @@ export type TileType = {
     distance: number;
     parent: TileType | null;
 };
-
+export type SpeedType = 2 | 1 | 0.5;
 export type GridType = TileType[][];
