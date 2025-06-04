@@ -50,7 +50,7 @@ export function Grid({isVisualizationRunningRef}:{isVisualizationRunningRef: Ref
       {grid.map((row, rowIndex) => (
         <div key={rowIndex} className="flex">
           {row.map((tile, tileIndex) => {
-            const { isStart, isEnd, isTraversed, isWall, isPath } = tile;
+            const { row,col, isStart, isEnd, isTraversed, isWall, isPath } = tile;
             return (
               <Tile
                 key={tileIndex}
@@ -61,9 +61,9 @@ export function Grid({isVisualizationRunningRef}:{isVisualizationRunningRef: Ref
                 isTraversed={isTraversed}
                 isWall={isWall}
                 isPath={isPath}
-                handleMouseDown={() => handleMouseDown(tile.row, tile.col)}
-                handleMouseUp={() => handleMouseUp(tile.row, tile.col)}
-                handMouseEnter={() => handMouseEnter(tile.row, tile.col)} 
+                handleMouseDown={() => handleMouseDown(row,col)}
+                handleMouseUp={() => handleMouseUp(row,col)}
+                handMouseEnter={() => handMouseEnter(row,col)} 
               />
             );
           })}
