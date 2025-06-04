@@ -1,12 +1,38 @@
 import { twMerge } from "tailwind-merge";
 import { usePathfinding } from "../hooks/usePathfinding";
-import React from "react";
-import { MAX_ROWS } from "../utils/constant";
+import type { RefObject } from "react";
+import { MAX_COLS, MAX_ROWS } from "../utils/constant";
+import { Tile } from "./Tile";
+import { useState } from "react";
+import { checkIfStartOrEnd ,createNewGrid} from "../utils/helpers";
 
+export function Grid({isVisualizationRunningRef}:{isVisualizationRunningRef: RefObject<boolean>}) {
+  const { grid,setGrid } = usePathfinding();
+  const [isMouseDown, setIsMouseDown] = useState(false);
+  const handleMouseDown = (row: number, col:number) => { 
+    if (isVisualizationRunningRef.current || checkIfStartOrEnd(row,col)){
+        return;
+    }
+    setIsMouseDown(true);
+    const newGrid = createNewGrid(grid,row,col);
+    setGrid(newGrid);
+  };
+  const handleMouseUp = (row:number,col:number) => {
+    if (isVisualizationRunningRef.current || checkIfStartOrEnd(row,col)){
+        return;
+    }
+    setIsMouseDown(false);
+  }
+  const handMouseEnter = (row: number, col: number) => {
+    if (isVisualizationRunningRef.current || !isMouseDown || checkIfStartOrEnd(row,col)) {
+      return;
+    }
+    if (isMouseDown){
+        const newGrid = createNewGrid(grid, row, col);
+        setGrid(newGrid);
+    }
+  };
 
-
-export function Grid() {
-  const { grid } = usePathfinding();
   return (
     <div
       className={twMerge(
@@ -15,7 +41,7 @@ export function Grid() {
         // Control grid height
         `lg:min-h-[${MAX_ROWS * 17}] md:min-h-[${MAX_ROWS * 15}] xs:min-h-[${MAX_ROWS * 7}]`,
         // Control grid width
-        `lg:min-w-[${MAX_ROWS * 17}] md:min-w-[${MAX_ROWS * 15}] xs:min-w-[${MAX_ROWS * 7}]`,
+        `lg:min-w-[${MAX_COLS * 17}] md:min-w-[${MAX_COLS * 15}] xs:min-w-[${MAX_COLS * 7}]`,
     
     
     )}
@@ -23,12 +49,24 @@ export function Grid() {
     >
       {grid.map((row, rowIndex) => (
         <div key={rowIndex} className="flex">
-          {row.map((tile, tileIndex) => (
-            <div
-              key={tileIndex}
-              className="bg-white h-2 w-2 border"
-            />
-          ))}
+          {row.map((tile, tileIndex) => {
+            const { isStart, isEnd, isTraversed, isWall, isPath } = tile;
+            return (
+              <Tile
+                key={tileIndex}
+                row={tile.row}
+                col={tile.col}
+                isStart={isStart}
+                isEnd={isEnd}
+                isTraversed={isTraversed}
+                isWall={isWall}
+                isPath={isPath}
+                handleMouseDown={() => handleMouseDown(tile.row, tile.col)}
+                handleMouseUp={() => handleMouseUp(tile.row, tile.col)}
+                handMouseEnter={() => handMouseEnter(tile.row, tile.col)} 
+              />
+            );
+          })}
         </div>
       ))}
     </div>
